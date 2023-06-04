@@ -1,0 +1,12 @@
+body { background-color: white; }
+
+#player {
+    width: 100%;
+    height: 3em;
+
+    object-fit: contain;
+}
+
+.ui {
+    margin: 0.5em;
+}
