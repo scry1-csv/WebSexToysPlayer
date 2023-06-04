@@ -12,7 +12,7 @@ Vibrators that support Buttplug
  ([List](https://iostindex.com/?filter0ButtplugSupport=7) )
 
 ## URL
-[https://scry1-csv.github.io/WebSexToysPlayer/index.html](https://scry1-csv.github.io/WebSexToysPlayer/index.html)
+[https://scry1-csv.github.io/WebSexToysPlayer-Pages/](https://scry1-csv.github.io/WebSexToysPlayer-Pages/)
 
 ## Library Used
 [Buttplug JS](https://github.com/buttplugio/buttplug-rs-ffi/tree/master/js)

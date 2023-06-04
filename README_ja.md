@@ -11,7 +11,7 @@ U.F.O SA
 Buttplugでの振動操作に対応したデバイス( [リスト](https://iostindex.com/?filter0ButtplugSupport=7)) 
 
 ## URL
-[https://scry1-csv.github.io/WebSexToysPlayer/index.html](https://scry1-csv.github.io/WebSexToysPlayer/index.html)
+[https://scry1-csv.github.io/WebSexToysPlayer-Pages/](https://scry1-csv.github.io/WebSexToysPlayer-Pages/)
 
 ## 使用しているライブラリ
 [Buttplug JS](https://github.com/buttplugio/buttplug-rs-ffi/tree/master/js)
