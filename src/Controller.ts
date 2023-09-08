@@ -155,6 +155,6 @@ export class Controller {
                 else connectStatusElem.innerText = "接続失敗";
             });
 
-        this.ButtplugOperator.AddDevicesRefleshedEvents(() => this.RefleshDeviceLists);
+        this.ButtplugOperator.AddDevicesRefleshedEvents(() => this.RefleshDeviceLists());
     }
 }
