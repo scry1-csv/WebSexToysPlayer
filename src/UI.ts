@@ -16,7 +16,6 @@ export class UIController {
 
     constructor(ui: UItype) {
         this.Elem = ui;
-        //customElements.define("slider-container", SliderContainer);
     }
 
     private AppendToList(list: HTMLOListElement, str: string): HTMLLIElement {
