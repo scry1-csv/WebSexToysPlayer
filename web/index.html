@@ -9,14 +9,24 @@
 </head>
 
 <body>
+	<div id="header">
+		<a href="https://github.com/scry1-csv/WebSexToysPlayer">GitHub</a>
+		<a target="_blank" href="usage_ja.html">使い方</a>
+	</div>
+	<hr />
+	<div class="ui">
+		<input id="serverURL" type="text" value="localhost:12345">
+		<button id="connectServer">Buttplugサーバーへ接続</button>
+		接続状態 <span id="connectStatus"></span>
+	</div>
 	<video id="player" src="" controls></video>
 	<div class="ui">
 		<input id="mediaInput" type="file" accept="video/*,audio/*" style="display: none;" />
 		<button id="mediaButton" type="button">動画や音声を選択</button>
 	</div>
 	<div class="ui">
-		<input id="scriptInput" type="file" accept="text/csv" style="display: none;" />
-		<button id="scriptButton" type="button">CSVを選択</button>
+		<input id="scriptInput" type="file" accept="text/csv,.funscript" style="display: none;" />
+		<button id="scriptButton" type="button">スクリプトを選択</button>
 	</div>
 	<div class="ui"><button id="connectButton">デバイス接続</button></div>
 	<div class="ui">
@@ -26,25 +36,32 @@
 		秒
 	</div>
 	<div>
+		<p>読み込み済みメディア</p>
+		<ol id="MediaList"></ol>
+	</div>
+	<div>
 		<p>接続済みデバイス</p>
+		<ul id="DeviceList"></ul>
 		<ul>
 			<li>ローター/バイブ</li>
 			<ul id="VibDeviceList"></ul>
-			<li>UFOSA</li>
-			<ul id="UFOSADeviceList"></ul>
+			<li>回転</li>
+			<ul id="RotatorDeviceList"></ul>
+			<li>前後</li>
+			<ul id="LinearDeviceList"></ul>
 		</ul>
 	</div>
 	<div>
 	<p>読込済みスクリプト</p>
 		<ul>
-			<li>ローター/バイブ</li>
-			<ul id="VibScriptList"></ul>
-			<li>UFOSA</li>
-			<ul id="UFOSAScriptList"></ul>
+			<li>タイムローター用</li>
+			<ul id="TimeRoterScriptList"></ul>
+			<li>UFOSA・サイクロンSA用</li>
+			<ul id="VorzeSAScriptList"></ul>
+			<li>funscript</li>
+			<ul id="FunscriptList"></ul>
 		</ul>
 	</div>
-	<div><a href="https://github.com/scry1-csv/WebSexToysPlayer">GitHub</a></div>
-	<script lang="javascript" src="https://cdn.jsdelivr.net/npm/buttplug@1.0.17/dist/web/buttplug.min.js"></script>
 	<script src="main.js" type="module"></script>
 
 </body>

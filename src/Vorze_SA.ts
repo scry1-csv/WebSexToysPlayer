@@ -56,7 +56,7 @@ export module Vorze_SA {
         return result;
     }
 
-    function RawScriptToLines(script_str: string): ScriptLine[] {
+    export function RawScriptToLines(script_str: string): ScriptLine[] {
         const tmp = script_str.replace(/\r\n|\r/g, "\n");
         const lines = tmp.split(/\n/);
         let result: ScriptLine[] = [];
@@ -65,7 +65,7 @@ export module Vorze_SA {
             //console.log(match);
             if (match) {
                 let millisecond = Number(match[1]) * 100;
-                const clockwise = match[2]==="1" ? true : false;
+                const clockwise = match[2] === "1" ? true : false;
                 const power = Number(match[3]);
                 const line = new ScriptLine(millisecond, clockwise, power);
                 //console.log(line)
@@ -77,11 +77,11 @@ export module Vorze_SA {
         return result;
     }
 
-    function SplitLines(lines: ScriptLine[]) {
+    export function SplitLines(lines: ScriptLine[]) {
         let splitted: ScriptLine[][] = [];
         lines.forEach((line) => {
             const seconds = line.Seconds;
-            if (splitted[seconds] === undefined) {
+            if (!splitted[seconds]) {
                 splitted[seconds] = [];
             }
             splitted[seconds].push(line);
@@ -89,30 +89,4 @@ export module Vorze_SA {
         const result: readonly ScriptLine[][] = splitted;
         return result;
     }
-
-    export function LoadScript(script_str: string): readonly ScriptLine[][] {
-        const lines = RawScriptToLines(script_str);
-        return SplitLines(lines);
-    }
-
-    const gTestScriptLines = [
-        new ScriptLine(500, true, 800),
-        new ScriptLine(600, true, 0),
-        new ScriptLine(1500, false, 400),
-        new ScriptLine(1600, false, 0),
-        new ScriptLine(2500, true, 800),
-        new ScriptLine(2600, true, 0),
-        new ScriptLine(3500, false, 400),
-        new ScriptLine(3600, false, 0),
-        new ScriptLine(4500, true, 800),
-        new ScriptLine(4600, true, 0),
-        new ScriptLine(5500, false, 400),
-        new ScriptLine(5600, false, 0),
-        new ScriptLine(6500, true, 800),
-        new ScriptLine(6600, true, 0),
-        new ScriptLine(7500, false, 400),
-        new ScriptLine(7600, false, 0),
-    ];
-
-    export const TestScript = SplitLines(gTestScriptLines);
 }

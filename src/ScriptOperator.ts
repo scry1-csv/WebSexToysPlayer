@@ -1,6 +1,8 @@
 import { ButtplugOperator } from "./ButtplugOperator";
 import { TimeRoter } from "./TimeRoter";
 import { Vorze_SA } from "./Vorze_SA";
+import { Funscript } from "./Funscript";
+
 
 export class ScriptOperator {
     private readonly _buttplugOperator: ButtplugOperator;
@@ -9,47 +11,60 @@ export class ScriptOperator {
     Offset: number = 0;
 
     Scripts: {
-        Viberator: {
-            Script: readonly TimeRoter.ScriptLine[][],
-            Name: string
-        } | undefined,
-        UFOSA: {
-            Script: readonly Vorze_SA.ScriptLine[][],
-            Name: string
-        } | undefined
-    } =
-    {
-        Viberator: undefined, UFOSA: undefined
-    };
+        TimeRoter:
+        | {
+            Script: readonly TimeRoter.ScriptLine[];
+            Splitted: readonly TimeRoter.ScriptLine[][];
+            Title: string;
+        }
+        | undefined;
+        Vorze_SA:
+        | {
+            Script: readonly Vorze_SA.ScriptLine[];
+            Splitted: readonly Vorze_SA.ScriptLine[][];
+            Title: string;
+        }
+        | undefined;
+        Funscript: Funscript | undefined;
+    } = {
+            TimeRoter: undefined,
+            Vorze_SA: undefined,
+            Funscript: undefined,
+        };
 
     constructor(buttplug: ButtplugOperator) {
         this._buttplugOperator = buttplug;
     }
 
-    GetFileName(path:string) {
-        if(path.match(/[a-zA-Z]:\\/)) {
+    GetFileName(path: string) {
+        if (path.match(/[a-zA-Z]:\\/)) {
             return path.split("\\").reverse()[0];
-        }
-        else
-        {
+        } else {
             return path.split("/").reverse()[0];
         }
     }
 
     LoadScript(script_str: string, path: string): boolean {
+        console.log("path: " + path);
+        if (path.endsWith(".funscript")) {
+            this.Scripts.Funscript = new Funscript(this.GetFileName(path), script_str);
+            return true;
+        }
         if (TimeRoter.Validate(script_str)) {
-            const script = TimeRoter.LoadScript(script_str);
-            this.Scripts.Viberator = {
-                Script:script,
-                Name: this.GetFileName(path)
+            const script = TimeRoter.RawScriptToLines(script_str);
+            this.Scripts.TimeRoter = {
+                Script: script,
+                Splitted: TimeRoter.SplitLines(script),
+                Title: this.GetFileName(path),
             };
             console.log("timeroter script loaded. lines: " + script.length);
             return true;
         } else if (Vorze_SA.Validate(script_str)) {
-            const script = Vorze_SA.LoadScript(script_str);
-            this.Scripts.UFOSA = {
+            const script = Vorze_SA.RawScriptToLines(script_str);
+            this.Scripts.Vorze_SA = {
                 Script: script,
-                Name: this.GetFileName(path),
+                Splitted: Vorze_SA.SplitLines(script),
+                Title: this.GetFileName(path),
             };
             console.log("Vorze_SA script loaded. lines: " + script.length);
             return true;
@@ -59,8 +74,9 @@ export class ScriptOperator {
     Play(currentTime: number) {
         const currentSeconds = Math.trunc(currentTime);
         this._previousSeconds = currentSeconds - 2;
-        this.OperateViberatorScript(currentSeconds - 1);
-        this.OperateSAScript(currentSeconds - 1);
+        this.OperateTimeRoterScript(currentSeconds - 1);
+        this.OperateVorzeSAScript(currentSeconds - 1);
+        this.OperateFunscript(currentSeconds - 1);
         this._previousSeconds = currentSeconds;
     }
 
@@ -69,7 +85,10 @@ export class ScriptOperator {
         this._buttplugOperator.Devices.Viberators.forEach((d) => {
             d.stop();
         });
-        this._buttplugOperator.Devices.Vorze_SA.forEach((d) => {
+        this._buttplugOperator.Devices.Rotators.forEach((d) => {
+            d.stop();
+        });
+        this._buttplugOperator.Devices.Linears.forEach((d) => {
             d.stop();
         });
         this._timerIDs.forEach((id) => {
@@ -82,27 +101,62 @@ export class ScriptOperator {
         const adjustedTime = currentTime + this.Offset;
         const seconds = Math.trunc(adjustedTime);
         if (seconds !== this._previousSeconds) {
-            this.OperateViberatorScript(adjustedTime);
-            this.OperateSAScript(adjustedTime);
+            this.OperateTimeRoterScript(adjustedTime);
+            this.OperateVorzeSAScript(adjustedTime);
+            this.OperateFunscript(adjustedTime);
             this._previousSeconds = seconds;
         }
     }
 
-    private OperateSAScript(currentTime: number) {
-        if (!this.Scripts.UFOSA) return;
+    SetFunscriptRange(min: number, max: number) {
+        this.Scripts.Funscript?.SetRange(min, max)
+    }
+
+    private OperateTimeRoterScript(currentTime: number) {
+        if (!this.Scripts.TimeRoter) return;
 
         const currentSeconds = Math.trunc(currentTime);
-        const script = this.Scripts.UFOSA.Script;
+        const script = this.Scripts.TimeRoter.Splitted;
 
         if (
-            this._buttplugOperator.Devices.Vorze_SA.length > 0 &&
+            this._buttplugOperator.Devices.Viberators.length > 0 &&
             currentSeconds !== this._previousSeconds &&
             script[currentSeconds + 1]
         ) {
             script[currentSeconds + 1].forEach((l) => {
                 const delay = l.Milliseconds - Math.trunc(currentTime * 1000);
 
-                setTimeout(() => console.log(l.toString()), delay);
+                const log = `send ViberateMsg: ${l.toString()}`;
+                setTimeout(() => console.log(log), delay);
+
+                const id = window.setTimeout(() => {
+                    this._buttplugOperator.SendViberateMsg(l.ButtPower);
+                }, delay);
+
+                this._timerIDs.add(id);
+                setTimeout(() => {
+                    this._timerIDs.delete(id);
+                }, 3000);
+            });
+        }
+    }
+
+    private OperateVorzeSAScript(currentTime: number) {
+        if (!this.Scripts.Vorze_SA) return;
+
+        const currentSeconds = Math.trunc(currentTime);
+        const script = this.Scripts.Vorze_SA.Splitted;
+
+        if (
+            this._buttplugOperator.Devices.Rotators.length > 0 &&
+            currentSeconds !== this._previousSeconds &&
+            script[currentSeconds + 1]
+        ) {
+            script[currentSeconds + 1].forEach((l) => {
+                const delay = l.Milliseconds - Math.trunc(currentTime * 1000);
+
+                const log = `send RotateMsg: ${l.toString()}`;
+                setTimeout(() => console.log(log), delay);
 
                 const id = window.setTimeout(() => {
                     this._buttplugOperator.SendRotateMsg(
@@ -119,24 +173,26 @@ export class ScriptOperator {
         }
     }
 
-    private OperateViberatorScript(currentTime: number) {
-        if (!this.Scripts.Viberator) return;
+    private OperateFunscript(currentTime: number) {
+        if (!this.Scripts.Funscript) return;
 
         const currentSeconds = Math.trunc(currentTime);
-        const script = this.Scripts.Viberator.Script;
+        const currentMilliseconds = currentTime * 1000;
+        const script = this.Scripts.Funscript.Splitted;
 
         if (
-            this._buttplugOperator.Devices.Viberators.length > 0 &&
+            this._buttplugOperator.Devices.Linears.length > 0 &&
             currentSeconds !== this._previousSeconds &&
             script[currentSeconds + 1]
         ) {
             script[currentSeconds + 1].forEach((l) => {
-                const delay = l.Milliseconds - Math.trunc(currentTime * 1000);
+                const delay = l.Milliseconds - currentMilliseconds;
 
-                setTimeout(() => console.log(l.toString()), delay);
+                const log = `send LinearMsg: ${l.toString()}`;
+                setTimeout(() => console.log(log), delay);
 
                 const id = window.setTimeout(() => {
-                    this._buttplugOperator.SendViberateMsg(l.ButtPower);
+                    this._buttplugOperator.SendLinearMsg(l.ButtPosition, l.Duration);
                 }, delay);
 
                 this._timerIDs.add(id);

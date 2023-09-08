@@ -53,7 +53,7 @@ export module TimeRoter {
         return result;
     }
 
-    function RawScriptToLines(script_str: string): ScriptLine[] {
+    export function RawScriptToLines(script_str: string): ScriptLine[] {
         const tmp = script_str.replace(/\r\n|\r/g, "\n");
         const lines = tmp.split(/\n/);
         let result: ScriptLine[] = [];
@@ -63,11 +63,11 @@ export module TimeRoter {
                 let millisecond = Number(match[1]) * 1000;
                 if (match[2]) {
                     const str_c = match[2].replace(".", "");
-                    let centi:number;
-                    if(str_c.length == 1){
-                        centi = Number(str_c)*10;
+                    let centi: number;
+                    if (str_c.length == 1) {
+                        centi = Number(str_c) * 10;
                     }
-                    else{
+                    else {
                         centi = Number(str_c);
                     }
                     millisecond += centi * 10;
@@ -81,11 +81,11 @@ export module TimeRoter {
         return result;
     }
 
-    function SplitLines(lines: ScriptLine[]) {
+    export function SplitLines(lines: ScriptLine[]) {
         let splitted: ScriptLine[][] = [];
         lines.forEach((line) => {
             const seconds = line.Seconds;
-            if (splitted[seconds] === undefined) {
+            if (!splitted[seconds]) {
                 splitted[seconds] = [];
             }
             splitted[seconds].push(line);

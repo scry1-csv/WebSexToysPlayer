@@ -1,9 +1,14 @@
+import { SliderContainer } from "./SliderContainer";
+
 export type UItype = {
     Player: HTMLMediaElement;
     VibDeviceList: HTMLOListElement;
-    UFOSADeviceList: HTMLOListElement;
-    VibScriptList: HTMLOListElement;
-    UFOSAScriptList: HTMLOListElement;
+    RotatorDeviceList: HTMLOListElement;
+    LinearDeviceList: HTMLOListElement;
+    TimeRoterScriptList: HTMLOListElement;
+    VorzeSAScriptList: HTMLOListElement;
+    FunscriptList: HTMLOListElement;
+    FunscriptSlider: SliderContainer | undefined;
 };
 
 export class UIController {
@@ -11,50 +16,59 @@ export class UIController {
 
     constructor(ui: UItype) {
         this.Elem = ui;
+        //customElements.define("slider-container", SliderContainer);
     }
 
-    private AppendToList(list: HTMLOListElement, str: string) {
-        const e = document.createElement("li");
-        e.innerText = str;
-        list.appendChild(e);
+    private AppendToList(list: HTMLOListElement, str: string): HTMLLIElement {
+        const li = document.createElement("li");
+        const span = document.createElement("span")
+        span.className = ("name");
+        span.innerText = str;
+        li.appendChild(span)
+        list.appendChild(li);
+        return li;
     }
 
     AppendVibDeviceList(str: string) {
         this.AppendToList(this.Elem.VibDeviceList, str);
     }
-    AppendUFOSADeviceList(str: string) {
-        this.AppendToList(this.Elem.UFOSADeviceList, str);
+    AppendRotatorDeviceList(str: string) {
+        this.AppendToList(this.Elem.RotatorDeviceList, str);
     }
-    AppendVibScriptList(str: string) {
-        this.AppendToList(this.Elem.VibScriptList, str);
+    AppendLinearDeviceList(str: string) {
+        this.AppendToList(this.Elem.LinearDeviceList, str);
     }
-    AppendUFOSAScriptList(str: string) {
-        this.AppendToList(this.Elem.UFOSAScriptList, str);
+    AppendTimeRoterScriptList(str: string) {
+        this.AppendToList(this.Elem.TimeRoterScriptList, str);
+    }
+    AppendVorzeSAScriptList(str: string) {
+        this.AppendToList(this.Elem.VorzeSAScriptList, str);
+    }
+
+    AppendFunscriptList(str: string) {
+        const e = this.AppendToList(this.Elem.FunscriptList, str);
+        const slider = document.createElement("slider-container") as SliderContainer;
+        e.appendChild(slider);
+        slider.InitializeSlider();
+        this.Elem.FunscriptSlider = slider;
     }
 
     ClearDeviceLists() {
-        while (this.Elem.VibDeviceList.childNodes[0]) {
-            this.Elem.VibDeviceList.removeChild(
-                this.Elem.VibDeviceList.childNodes[0]
-            );
-        }
-        while (this.Elem.UFOSADeviceList.childNodes[0]) {
-            this.Elem.UFOSADeviceList.removeChild(
-                this.Elem.UFOSADeviceList.childNodes[0]
-            );
-        }
+        this.Elem.VibDeviceList.innerHTML = '';
+        this.Elem.RotatorDeviceList.innerHTML = "";
+        this.Elem.LinearDeviceList.innerHTML = "";
     }
 
     ClearScriptLists() {
-        while (this.Elem.VibScriptList.childNodes[0]) {
-            this.Elem.VibScriptList.removeChild(
-                this.Elem.VibScriptList.childNodes[0]
-            );
-        }
-        while (this.Elem.UFOSAScriptList.childNodes[0]) {
-            this.Elem.UFOSAScriptList.removeChild(
-                this.Elem.UFOSAScriptList.childNodes[0]
-            );
-        }
+        this.Elem.TimeRoterScriptList.innerHTML = '';
+        this.Elem.VorzeSAScriptList.innerHTML = "";
+        this.Elem.FunscriptList.innerHTML = "";
+    }
+
+    AddFunscriptSliderUpdateEvent(event: (min: number, max: number) => void) {
+        const slider = this.Elem.FunscriptSlider;
+        slider?.addEventListener("mouseup", () => {
+            event(slider.range_min, slider.range_max);
+        })
     }
 }
