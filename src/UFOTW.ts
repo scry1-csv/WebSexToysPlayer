@@ -1,11 +1,17 @@
-export module Vorze_SA {
+export module UFOTW {
     export class ScriptLine {
         Milliseconds = 0;
-        Clockwise: boolean = true;
-        Power = 0;
+        LeftClockwise: boolean = true;
+        LeftPower = 0;
+        RightClockwise: boolean = true;
+        RightPower = 0;
 
-        get ButtPower(): number {
-            return this.Power / 100;
+
+        get LeftButtPower(): number {
+            return this.LeftPower / 100;
+        }
+        get RightButtPower(): number {
+            return this.RightPower / 100;
         }
 
         get Seconds(): number {
@@ -24,21 +30,26 @@ export module Vorze_SA {
             return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
         }
 
-        constructor(time: number, clockwise: boolean, power: number) {
+        constructor(time: number, leftClockwise: boolean, leftPower: number, rightClockwise: boolean, rightPower: number) {
             this.Milliseconds = time;
-            this.Clockwise = clockwise;
+            this.LeftClockwise = leftClockwise;
+            this.RightClockwise = rightClockwise;
 
-            if (power < 0) this.Power = 0;
-            else if (power > 100) this.Power = 100;
-            else this.Power = power;
+            if (leftPower < 0) this.LeftPower = 0;
+            else if (leftPower > 100) this.LeftPower = 100;
+            else this.LeftPower = leftPower;
+
+            if (rightPower < 0) this.RightPower = 0;
+            else if (rightPower > 100) this.RightPower = 100;
+            else this.RightPower = rightPower;
         }
 
         toString() {
-            return `Time: ${this.Milliseconds}, Clockwise: ${this.Clockwise} Power: ${this.ButtPower}`;
+            return `Time: ${this.Milliseconds}, LeftClockwise: ${this.LeftClockwise} LeftPower: ${this.LeftButtPower}, LeftClockwise: ${this.RightClockwise} LeftPower: ${this.RightButtPower}`;
         }
     }
 
-    const regexp = /^([0-9]+),(0|1),(100|[0-9]{1,2})$/;
+    const regexp = /^([0-9]+),(0|1),(100|[0-9]{1,2}),(0|1),(100|[0-9]{1,2})$/;
 
     export function Validate(script_str: string): boolean {
         const tmp = script_str.replace(/\r\n|\r/g, "\n");
@@ -65,13 +76,15 @@ export module Vorze_SA {
             //console.log(match);
             if (match) {
                 let millisecond = Number(match[1]) * 100;
-                const clockwise = match[2] === "1" ? true : false;
-                const power = Number(match[3]);
-                const line = new ScriptLine(millisecond, clockwise, power);
+                const leftClockwise = match[2] === "1" ? true : false;
+                const leftPower = Number(match[3]);
+                const rightClockwise = match[4] === "1" ? true : false;
+                const rightPower = Number(match[5]);
+                const line = new ScriptLine(millisecond, leftClockwise, leftPower, rightClockwise, rightPower);
                 //console.log(line)
                 result.push(line);
             }
-        }
+        };
         console.log("script start time: " + result[0].HHMMSS);
 
         return result;

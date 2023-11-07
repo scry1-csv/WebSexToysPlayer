@@ -1,5 +1,5 @@
 import { getFunscriptFromString } from "funscript-utils/lib/funConverter";
-import { Funscript as FunscriptJson } from "funscript-utils/lib/types"
+import { Funscript as FunscriptJson } from "funscript-utils/lib/types";
 
 export class Funscript {
     Title: string;
@@ -22,7 +22,7 @@ export class Funscript {
 
         this.Origin = script;
         this.Ranged = script;
-        this.Splitted = this.splitLines(script);
+        this.Splitted = this.SplitLines(script);
     }
 
     private ConvertJsonToScript(json: FunscriptJson) {
@@ -40,23 +40,23 @@ export class Funscript {
     }
 
     public SetRange(min: number, max: number) {
-        let result: ScriptLine[] = []
+        let result: ScriptLine[] = [];
         for (const line of this.Origin) {
-            const newpos = this.normalize(line.Position, this.OriginMin, this.OriginMax, min, max)
+            const newpos = this.normalize(line.Position, this.OriginMin, this.OriginMax, min, max);
             const newline = new ScriptLine(line.Milliseconds, newpos, line.Duration);
             result.push(newline);
         }
 
         this.Ranged = result;
-        this.Splitted = this.splitLines(result);
+        this.Splitted = this.SplitLines(result);
 
         for (let i = 0; i < 10; i++) {
-            console.log(this.Ranged[i])
+            console.log(this.Ranged[i]);
         }
 
-        console.log("newmin: " + this.getMin(this.Ranged))
-        console.log("newmax: " + this.getMax(this.Ranged))
-        console.log("splitted.length: " + this.Splitted.length)
+        console.log("newmin: " + this.getMin(this.Ranged));
+        console.log("newmax: " + this.getMax(this.Ranged));
+        console.log("splitted.length: " + this.Splitted.length);
     }
 
     public Validate(script_str: string): boolean {
@@ -71,18 +71,18 @@ export class Funscript {
     }
 
     private getMin(script: readonly ScriptLine[]) {
-        const positions = script.map((line) => line.Position)
+        const positions = script.map((line) => line.Position);
         const compare = (a: number, b: number) => Math.min(a, b);
         return positions.reduce(compare);
     }
 
     private getMax(script: readonly ScriptLine[]) {
-        const positions = script.map((line) => line.Position)
+        const positions = script.map((line) => line.Position);
         const compare = (a: number, b: number) => Math.max(a, b);
         return positions.reduce(compare);
     }
 
-    private splitLines(lines: ScriptLine[]) {
+    private SplitLines(lines: ScriptLine[]) {
         let splitted: ScriptLine[][] = [];
 
         for (const line of lines) {
@@ -108,7 +108,7 @@ export class Funscript {
 
         const oldRange = oldMax - oldMin;
         const newRange = newMax - newMin;
-        const newValue = (((value - oldMin) * newRange) / oldRange) + newMin
+        const newValue = (((value - oldMin) * newRange) / oldRange) + newMin;
         return newValue;
     }
 }
@@ -139,12 +139,13 @@ export class ScriptLine {
     }
 
     constructor(milliseconds: number, position: number, duration: number) {
+        if (milliseconds < 0) throw new RangeError("milliseconds does not accept negative values.");
+        if (position < 0 || position > 100) throw new RangeError("position does not accept values outside the range 0 to 100.");
+        if (duration < 0) throw new RangeError("milliseconds does not accept negative values.");
+
         this.Milliseconds = milliseconds;
         this.Duration = duration;
-
-        if (position < 0) this.Position = 0;
-        else if (position > 100) this.Position = 100;
-        else this.Position = position;
+        this.Position = position;
     }
 
     toString() {

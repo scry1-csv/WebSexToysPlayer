@@ -133,12 +133,9 @@ h1 {
 	border-bottom-style: solid;
 }
 
-/* edited */
 h1, h2, h3 {
-	border-left: solid gray;
-    padding-left: 0.5em;
+	font-weight: normal;
 }
-
 
 table {
 	border-collapse: collapse;
@@ -370,43 +367,56 @@ code {
   </script>
 <h1 id="websextoysplayer">WebSexToysPlayer</h1>
 <h2 id="%E6%A6%82%E8%A6%81">概要</h2>
-<p>WebSexToysPlayerは、the HandyやU.F.O SA等の連動機能つき大人のオモチャ用のスクリプトを音声や動画と連動させて再生するwebアプリです。</p>
+<p>WebSexToysPlayerは、the HandyやU.F.O. SA等の連動機能つき大人のオモチャ用のスクリプトを音声や動画と連動させて再生するwebアプリです。</p>
 <p>他の Web 上の連動プレイヤーと比べて、音声や動画とスクリプトの連動タイミングができるだけ正確になるように工夫してあります。</p>
 <h2 id="%E3%83%97%E3%83%AC%E3%82%A4%E3%83%A4%E3%83%BC-url">プレイヤー URL</h2>
-<p><a href="https://scry1-csv.github.io/WebSexToysPlayer-Pages/">https://scry1-csv.github.io/WebSexToysPlayer-Pages/</a></p>
+<p>単独動作版: <a href="https://scry1-csv.github.io/WebSexToysPlayer-Pages/player_wasm.html">https://scry1-csv.github.io/WebSexToysPlayer-Pages/player_wasm.html</a></p>
+<p>Intiface接続版: <a href="https://scry1-csv.github.io/WebSexToysPlayer-Pages/player_intiface.html">https://scry1-csv.github.io/WebSexToysPlayer-Pages/player_intiface.html</a></p>
 <h2 id="%E4%BD%BF%E3%81%84%E6%96%B9">使い方</h2>
 <ol>
-<li>使用している端末に <a href="https://intiface.com/central/">Intiface Central</a> をインストール</li>
-<li>(必要なら)プレイヤー画面上部の「localhost:12345」をIntifaceのサーバアドレスに書き換え</li>
-<li>「Buttplugサーバーへ接続」を押す</li>
+<li>Intiface版のみ ( 単独動作版では不要 )
+<ol>
+<li>使用している端末に <a href="https://intiface.com/central/">Intiface Central</a> をインストール</li></li>
+<li>(必要なら)プレイヤー画面上部の「localhost:12345」をIntifaceのサーバアドレスに書き換え</li></li>
+<li>「Buttplugサーバーへ接続」を押して接続成功を待つ</li></li>
+</ol>
+</li>
 <li>接続に成功したら、端末のBluetoothと連動デバイスの電源がオンなのを確認してから「デバイス接続」を押す</li>
 <li>動画や音声とスクリプトを読み込んで再生</li>
 </ol>
 <h2 id="%E5%AF%BE%E5%BF%9C%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88">対応スクリプト</h2>
 <ul>
 <li>Funscript</li>
-<li>U.F.O SA / A10サイクロンSA用CSV</li>
+<li>U.F.O. SA / A10サイクロンSA用CSV</li>
+<li>U.F.O. TW用CSV</li>
 <li>タイムローター用CSV</li>
 </ul>
 <h2 id="%E5%90%8C%E6%99%82%E9%80%A3%E5%8B%95%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6">同時連動について</h2>
 <p>現在のところ、上記のスクリプト3種類につき一度に1ファイルずつ読み込んでの同時連動が可能です。それぞれのフォーマットの動作（前後移動・回転・振動）に対応した各デバイスをすべて同時に動かすようになっています。
-そのため、現時点ではU.F.O SAとA10サイクロンSAを別々のスクリプトで連動させることはできません。（今後対応予定）</p>
+そのため、現時点ではU.F.O. SAとA10サイクロンSAを別々のスクリプトで連動させることはできません。（今後対応予定）</p>
 <h2 id="%E5%AF%BE%E5%BF%9C%E3%83%87%E3%83%90%E3%82%A4%E3%82%B9">対応デバイス</h2>
 <ul>
-<li>U.F.O SA</li>
+<li>U.F.O. SA</li>
+<li>U.F.O. TW</li>
 <li>the Handy</li>
 <li>その他、Buttplugでの振動・回転・前後運動操作に対応したデバイス ( <a href="https://iostindex.com/?filter0ButtplugSupport=7">リスト</a> )</li>
 </ul>
 <p>A10 サイクロンSAやA10ピストンSAなどでも動くはずですが、当方では未所持につき動作は確認しておりません。
-U.F.O TWを接続した場合、左右同じ連動をすると思います。</p>
+U.F.O. TWを接続した場合、左右同じ連動をすると思います。</p>
 <h2 id="%E5%8B%95%E4%BD%9C%E7%A2%BA%E8%AA%8D%E6%B8%88%E3%81%BF%E3%83%87%E3%83%90%E3%82%A4%E3%82%B9">動作確認済みデバイス</h2>
 <ul>
 <li>U.F.O. SA</li>
+<li>U.F.O. TW</li>
 <li>the Handy</li>
 <li>MagicMotion Dante</li>
 <li>LOVENSE Domi2</li>
 </ul>
 <h2 id="%E6%9B%B4%E6%96%B0%E5%B1%A5%E6%AD%B4">更新履歴</h2>
+<h3 id="2023116">2023.11.6</h3>
+<ul>
+<li>U.F.O. TWに対応</li>
+<li>スタンドアローン版と Intiface 接続版を用意</li>
+</ul>
 <h3 id="202398">2023.9.8</h3>
 <ul>
 <li>the Handy 等の前後移動デバイス（Buttplug の LinearCmd 対応デバイス）に対応</li>

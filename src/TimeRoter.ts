@@ -57,7 +57,7 @@ export module TimeRoter {
         const tmp = script_str.replace(/\r\n|\r/g, "\n");
         const lines = tmp.split(/\n/);
         let result: ScriptLine[] = [];
-        lines.forEach((l) => {
+        for (const l of lines) {
             const match = l.match(regexp);
             if (match) {
                 let millisecond = Number(match[1]) * 1000;
@@ -76,20 +76,20 @@ export module TimeRoter {
                 const line = new ScriptLine(millisecond, power);
                 result.push(line);
             }
-        });
+        };
         console.log("script start time: " + result[0].HHMMSS);
         return result;
     }
 
     export function SplitLines(lines: ScriptLine[]) {
         let splitted: ScriptLine[][] = [];
-        lines.forEach((line) => {
-            const seconds = line.Seconds;
+        for (const l of lines) {
+            const seconds = l.Seconds;
             if (!splitted[seconds]) {
                 splitted[seconds] = [];
             }
-            splitted[seconds].push(line);
-        });
+            splitted[seconds].push(l);
+        };
         const result: readonly ScriptLine[][] = splitted;
         return result;
     }

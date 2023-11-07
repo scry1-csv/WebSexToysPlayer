@@ -1,17 +1,19 @@
 import * as Buttplug from "buttplug";
+import { ButtplugWasmClientConnector } from "buttplug-wasm";
 
 export class ButtplugOperator {
-    private _client: Buttplug.ButtplugClient = new Buttplug.ButtplugClient(
-        "ButtplugOperator"
-    );
+    private _client: Buttplug.ButtplugClient = new Buttplug.ButtplugClient();
 
     private _deviceRefleshedEvents: Array<() => void> = [];
+
+    public UFOTWReverseLR: boolean = false;
 
     Devices: {
         Viberators: Buttplug.ButtplugClientDevice[];
         Rotators: Buttplug.ButtplugClientDevice[];
         Linears: Buttplug.ButtplugClientDevice[];
-    } = { Viberators: [], Rotators: [], Linears: [] };
+        UFOTW: Buttplug.ButtplugClientDevice[];
+    } = { Viberators: [], Rotators: [], Linears: [], UFOTW: [] };
 
     constructor() {
         console.log("buttplugOperator constructed.");
@@ -33,10 +35,19 @@ export class ButtplugOperator {
         );
     }
 
-    async connectToServer(url: string) {
+    async connectWasm(): Promise<boolean> {
+        ButtplugWasmClientConnector.activateLogging();
+        return this.connect(new ButtplugWasmClientConnector());
+    }
+
+    async connectWebsocket(url: string) {
         const connector = new Buttplug.ButtplugBrowserWebsocketClientConnector(
             url
         );
+        return this.connect(connector);
+    }
+
+    async connect(connector: Buttplug.IButtplugClientConnector) {
         try {
             await this._client.connect(connector);
         } catch (e) {
@@ -62,10 +73,18 @@ export class ButtplugOperator {
         this.Devices.Viberators.splice(0);
         this.Devices.Rotators.splice(0);
         this.Devices.Linears.splice(0);
+        this.Devices.UFOTW.splice(0);
 
         for (const device of this._client.devices) {
             {
-                if (device.vibrateAttributes.length > 0) {
+                if (device.name === 'Vorze UFO TW') {
+                    this.Devices.UFOTW.push(device);
+                    device.rotate([[0.3, true], [0.3, false]]);
+                    setTimeout(() => {
+                        device.stop();
+                    }, 600);
+                }
+                else if (device.vibrateAttributes.length > 0) {
                     this.Devices.Viberators.push(device);
                     device.vibrate(0.5);
                     setTimeout(() => {
@@ -77,7 +96,7 @@ export class ButtplugOperator {
                     setTimeout(() => {
                         device.stop();
                     }, 600);
-                } else if (device.messageAttributes.LinearCmd) {
+                } else if (device.linearAttributes.length > 0) {
                     this.Devices.Linears.push(device);
                     device.linear(0, 1000);
                     setTimeout(() => {
@@ -119,6 +138,9 @@ export class ButtplugOperator {
         for (const d of this.Devices.Linears) {
             d.stop();
         }
+        for (const d of this.Devices.UFOTW) {
+            d.stop();
+        }
     }
 
     SendViberateMsg(power: number) {
@@ -136,6 +158,15 @@ export class ButtplugOperator {
     SendLinearMsg(position: number, duration: number) {
         this.Devices.Linears.forEach((device) => {
             device.linear(position, duration);
+        });
+    }
+
+    SendUFOTWMsg(leftPower: number, leftClockwise: boolean, rightPower: number, rightClockwise: boolean) {
+        this.Devices.UFOTW.forEach((device) => {
+            if (this.UFOTWReverseLR)
+                device.rotate([[rightPower, rightClockwise], [leftPower, leftClockwise]]);
+            else
+                device.rotate([[leftPower, leftClockwise], [rightPower, rightClockwise]]);
         });
     }
 

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+	<link rel="stylesheet" href="main.css">
+	<link rel="shortcut icon" href="#">
+	<title>WebSexToysPlayer for Intiface</title>
+	<meta charset="utf-8">
+</head>
+
+<body>
+	<div id="header">
+		<a href="player_wasm.html">単独動作版</a>
+		<a href="https://github.com/scry1-csv/WebSexToysPlayer">GitHub</a>
+		<a target="_blank" href="README_ja.html">使い方</a>
+	</div>
+	<hr />
+	<div class="ui">
+		<input id="serverURL" type="text" value="localhost:12345">
+		<button id="connectServerButton">Intifaceへ接続</button>
+		接続状態 <span id="connectStatus"></span>
+	</div>
+	<video id="player" src="" controls></video>
+	<div class="ui">
+		<input id="mediaInput" type="file" accept="video/*,audio/*" style="display: none;" />
+		<button id="mediaButton" type="button">動画や音声を選択</button>
+		<span id="mediaNameSpan"></span>
+	</div>
+	<div class="ui">
+		<input id="scriptInput" type="file" accept="text/csv,.funscript" style="display: none;" />
+		<button id="scriptButton" type="button">スクリプトを選択</button>
+	</div>
+	<div class="ui"><button id="connectDeviceButton">デバイス接続</button></div>
+	<div>
+		<p>設定</p>
+		<ul>
+			<li>オフセット:<input id="offset" type="number" style="width:4em;" value="0" step="0.1"/>秒</li>
+			<li id="UFOTWreverseLRli" style="display: none;">
+				<input id="UFOTWreverseLRCheckbox" type="checkbox" />
+				<label for="UFOTWreverseLRCheckbox">UFOTW左右反転</label>
+			</li>
+		</ul>
+	</div>
+	<div>
+		<p>接続済みデバイス</p>
+		<ul id="DeviceList"></ul>
+		<ul>
+			<li>ローター/バイブ</li>
+			<ul id="VibDeviceList"></ul>
+			<li>回転</li>
+			<ul id="RotatorDeviceList"></ul>
+			<li>前後</li>
+			<ul id="LinearDeviceList"></ul>
+			<li>UFOTW</li>
+			<ul id="UFOTWDeviceList"></ul>
+		</ul>
+	</div>
+	<div>
+	<p>読込済みスクリプト</p>
+		<ul>
+			<li>タイムローター用</li>
+			<ul id="TimeRoterScriptList"></ul>
+			<li>UFOSA・サイクロンSA用</li>
+			<ul id="VorzeSAScriptList"></ul>
+			<li>funscript</li>
+			<ul id="FunscriptList"></ul>
+			<li>UFOTW用</li>
+			<ul id="UFOTWScriptList"></ul>
+		</ul>
+	</div>
+	<script type="importmap">
+		{
+		  "imports": {
+			"buttplug": "https://cdn.jsdelivr.net/npm/buttplug@3.2.1/dist/web/buttplug.mjs",
+			"buttplug-wasm": "https://cdn.jsdelivr.net/npm/buttplug-wasm@2.0.1/dist/buttplug-wasm.mjs"
+		  }
+		}
+	  </script>
+	  
+	<script src="main.js" type="module"></script>
+
+</body>
+
+</html>

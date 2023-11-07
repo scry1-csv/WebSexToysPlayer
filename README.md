@@ -8,12 +8,15 @@ Compared to other web-based script players, it has been devised so that the sync
 
 ## Player URL
 
-[https://scry1-csv.github.io/WebSexToysPlayer-Pages/](https://scry1-csv.github.io/WebSexToysPlayer-Pages/)
+Standalone ver: [https://scry1-csv.github.io/WebSexToysPlayer-Pages/player_wasm.html](https://scry1-csv.github.io/WebSexToysPlayer-Pages/player_wasm.html)
+
+Intiface ver: [https://scry1-csv.github.io/WebSexToysPlayer-Pages/player_intiface.html](https://scry1-csv.github.io/WebSexToysPlayer-Pages/player_intiface.html)
 
 ## Supported Script Format
 
 - Funscript
-- Vorze [U.F.O SA](https://www.vorze.jp/en/ufosa/) / [A10 Cyclone SA](https://www.vorze.jp/en/a10cyclonesa/) CSV
+- Vorze [U.F.O. SA](https://www.vorze.jp/en/ufosa/) / [A10 Cyclone SA](https://www.vorze.jp/en/a10cyclonesa/) CSV
+- Vorze [U.F.O TW](https://www.vorze.jp/en/ufotw/) CSV
 - [Time Roter](http://trance-innovation.com/lp_time/) CSV
 
 ## Simultaneous Interactivity
@@ -23,20 +26,23 @@ Currently, it is possible to simultaneously load and play one file for each of t
 Therefore, it is not possible to control the U.F.O SA and A10 Cyclone SA separately with different scripts at this time. (Future support planned)
 
 ## Supported Devices
-- U.F.O SA
-- the Handy
-- Other devices compatible with vibration, rotation, and forward/backward movement via Buttplug
+- Devices compatible with vibration, rotation, and forward/backward movement via Buttplug
 ([List](https://iostindex.com/?filter0ButtplugSupport=7) )
-
-It should also work with devices like A10 Cyclone SA and A10 Piston SA, but I haven't tested them as I don't own these devices. 
 
 ## Tested Devices
 - U.F.O. SA
+- U.F.O. TW
 - the Handy
 - MagicMotion Dante
 - LOVENSE Domi2
 
 ## Change Log
+
+### November 7, 2023
+
+- Added support for U.F.O. TW CSV
+- 
+
 ### September 8, 2023
 
 - Added support for devices with forward/backward movement capabilities (Buttplug's LinearCmd compatible devices) like the Handy

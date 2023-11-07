@@ -5,5 +5,8 @@
         "moduleResolution": "node",
         "strict": true,
         "sourceMap": true,
+        "traceResolution": true,
+        "rootDir": "./src/",
+        "paths": {"buttplug-wasm": ["./src/ButtplugOperator.d.ts"]}
     }
 }
