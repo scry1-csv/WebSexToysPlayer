@@ -66,21 +66,21 @@ export class Controller {
         const UI = this.UI;
 
         UI.ClearScriptLists();
-        const v = this.ScriptOperator.Scripts.TimeRoter;
-        const u = this.ScriptOperator.Scripts.Vorze_SA;
-        const f = this.ScriptOperator.Scripts.Funscript;
-        const t = this.ScriptOperator.Scripts.UFOTW;
-        if (v) UI.AppendTimeRoterScriptList(v.Title);
-        if (u) UI.AppendVorzeSAScriptList(u.Title);
-        if (t) UI.AppendUFOTWScriptList(t.Title);
-        if (f) {
-            UI.AppendFunscriptList(f.Title);
-            UI.FunscriptSlider!.range_min = f.RangedMin;
-            UI.FunscriptSlider!.range_max = f.RangedMax;
+        const timeroter = this.ScriptOperator.Scripts.TimeRoter;
+        const vorzesa = this.ScriptOperator.Scripts.Vorze_SA;
+        const funscript = this.ScriptOperator.Scripts.Funscript;
+        const ufotw = this.ScriptOperator.Scripts.UFOTW;
+        if (timeroter) UI.AppendTimeRoterScriptList(timeroter.Title);
+        if (vorzesa) UI.AppendVorzeSAScriptList(vorzesa.Title);
+        if (ufotw) UI.AppendUFOTWScriptList(ufotw.Title);
+        if (funscript) {
+            UI.AppendFunscriptList(funscript.Title);
+            UI.FunscriptSlider!.range_min = funscript.RangedMin;
+            UI.FunscriptSlider!.range_max = funscript.RangedMax;
             UI.FunscriptSlider!.addEventListener("mouseup", () => {
                 const min = UI.FunscriptSlider!.range_min;
                 const max = UI.FunscriptSlider!.range_max;
-                f.SetRange(min, max);
+                funscript.SetRange(min, max);
             });
         }
     }
@@ -105,6 +105,7 @@ export class Controller {
         }
     }
 
+
     LoadMedia() {
         const UI = this.UI;
         const files = UI.MediaInput.files;
@@ -112,11 +113,14 @@ export class Controller {
             if (files[0].type.startsWith("video/")) {
                 UI.Player.src = URL.createObjectURL(files[0]);
                 UI.Player.style.height = "auto";
+                UI.MediaNameSpan.innerText = files[0].name;
             } else if (files[0].type.startsWith("audio/")) {
                 UI.Player.src = URL.createObjectURL(files[0]);
                 UI.Player.style.height = "3em";
+                UI.MediaNameSpan.innerText = files[0].name;
+            } else {
+                UI.MediaNameSpan.innerText = "このファイルは再生できません: " + files[0].name;
             }
-            UI.MediaNameSpan.innerText = files[0].name;
             UI.MediaInput.files = null;
         }
     }
