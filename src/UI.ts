@@ -79,6 +79,7 @@ export class UI {
         this.TimeRoterScriptList.innerHTML = '';
         this.VorzeSAScriptList.innerHTML = "";
         this.FunscriptList.innerHTML = "";
+        this.UFOTWScriptList.innerHTML = "";
     }
 
     AddFunscriptSliderUpdateEvent(event: (min: number, max: number) => void) {
