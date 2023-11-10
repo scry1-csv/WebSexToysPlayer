@@ -40,7 +40,6 @@ Intiface接続版: [https://scry1-csv.github.io/WebSexToysPlayer-Pages/player_in
 - その他、Buttplugでの振動・回転・前後運動操作に対応したデバイス ( [リスト](https://iostindex.com/?filter0ButtplugSupport=7) )
 
 A10 サイクロンSAやA10ピストンSAなどでも動くはずですが、当方では未所持につき動作は確認しておりません。
-U.F.O. TWを接続した場合、左右同じ連動をすると思います。
 
 ## 動作確認済みデバイス
 
