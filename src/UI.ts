@@ -6,8 +6,10 @@ export class UI {
     readonly MediaNameSpan: HTMLElement = <HTMLMediaElement>document.getElementById("mediaNameSpan")!;
 
     readonly OffsetInput: HTMLInputElement = <HTMLInputElement>document.getElementById("offset")!;
-    readonly UFOTWreverseLRli: HTMLOListElement = <HTMLOListElement>document.getElementById("UFOTWreverseLRli")!;
+
+    readonly UFOTWsettingli = document.getElementsByClassName("UFOTWsettingli")!;
     readonly UFOTWreverseLRCheckbox: HTMLInputElement = <HTMLInputElement>document.getElementById("UFOTWreverseLRCheckbox")!;
+    readonly VorzeSAScriptToUFOTWCheckbox: HTMLInputElement = <HTMLInputElement>document.getElementById("VorzeSAScriptToUFOTWCheckbox")!;
 
     readonly VibDeviceList: HTMLOListElement = <HTMLOListElement>document.getElementById("VibDeviceList")!;
     readonly RotatorDeviceList: HTMLOListElement = <HTMLOListElement>document.getElementById("RotatorDeviceList")!;

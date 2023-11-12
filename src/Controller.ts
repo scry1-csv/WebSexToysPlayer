@@ -56,10 +56,14 @@ export class Controller {
             for (const d of this.ButtplugOperator.Devices.UFOTW) {
                 UI.AppendUFOTWDeviceList(d.name);
             }
-            UI.UFOTWreverseLRli.style.display = "list-item";
+            for (const li of UI.UFOTWsettingli) {
+                (li as HTMLLIElement).style.display = "list-item";
+            }
         }
         else
-            UI.UFOTWreverseLRli.style.display = "none";
+            for (const li of UI.UFOTWsettingli) {
+                (li as HTMLLIElement).style.display = "none";
+            }
     }
 
     public RefleshScriptLists() {
@@ -150,6 +154,10 @@ export class Controller {
 
         UI.UFOTWreverseLRCheckbox.addEventListener("change", () => {
             this.ButtplugOperator.UFOTWReverseLR = this.UI.UFOTWreverseLRCheckbox.checked;
+        });
+
+        UI.VorzeSAScriptToUFOTWCheckbox.addEventListener("change", () => {
+            this.ScriptOperator.VorzeSAScriptToUFOTW = this.UI.VorzeSAScriptToUFOTWCheckbox.checked;
         });
 
         UI.OffsetInput.addEventListener("change", () => {

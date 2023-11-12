@@ -1,15 +1,19 @@
 import { ButtplugOperator } from "./ButtplugOperator";
-import { TimeRoter } from "./TimeRoter";
-import { Vorze_SA } from "./Vorze_SA";
+import * as TimeRoter from "./TimeRoter";
+import * as  Vorze_SA from "./Vorze_SA";
+import * as  UFOTW from "./UFOTW";
 import { Funscript } from "./Funscript";
-import { UFOTW } from "./UFOTW";
 
+// TODO: 現在接続中のデバイスとスクリプトをマッピングする機能を追加する
+// TODO: UFOSA用のスクリプトでUFOTWを動かせるようにする → 実装したのでテストする
 
 export class ScriptOperator {
     private readonly _buttplugOperator: ButtplugOperator;
     private _previousSeconds: number = 0;
     private _timerIDs = new Set<number>();
-    Offset: number = 0;
+
+    public VorzeSAScriptToUFOTW: boolean = false;
+    public Offset: number = 0;
 
     Scripts: {
         TimeRoter: {
@@ -108,7 +112,7 @@ export class ScriptOperator {
         const script = this.Scripts.TimeRoter.Splitted;
 
         if (
-            this._buttplugOperator.Devices.Viberators.length > 0 &&
+            this._buttplugOperator.isViberatorConnected &&
             currentSeconds !== this._previousSeconds &&
             script[currentSeconds + 1]
         ) {
@@ -136,8 +140,11 @@ export class ScriptOperator {
         const currentSeconds = Math.trunc(currentTime);
         const script = this.Scripts.Vorze_SA.Splitted;
 
-        if (
-            this._buttplugOperator.Devices.Rotators.length > 0 &&
+        const deviceFlag =
+            this._buttplugOperator.isRotatorConnected ||
+            (this.VorzeSAScriptToUFOTW && this._buttplugOperator.isUFOTWConnected);
+
+        if (deviceFlag &&
             currentSeconds !== this._previousSeconds &&
             script[currentSeconds + 1]
         ) {
@@ -152,6 +159,14 @@ export class ScriptOperator {
                         l.ButtPower,
                         l.Clockwise
                     );
+                    if (this.VorzeSAScriptToUFOTW) {
+                        this._buttplugOperator.SendUFOTWMsg(
+                            l.ButtPower,
+                            l.Clockwise,
+                            l.ButtPower,
+                            l.Clockwise
+                        );
+                    }
                 }, delay);
 
                 this._timerIDs.add(id);
@@ -170,7 +185,7 @@ export class ScriptOperator {
         const script = this.Scripts.UFOTW.Splitted;
 
         if (
-            this._buttplugOperator.Devices.UFOTW.length > 0 &&
+            this._buttplugOperator.isUFOTWConnected &&
             currentSeconds !== this._previousSeconds &&
             script[currentSeconds + 1]
         ) {
@@ -206,7 +221,7 @@ export class ScriptOperator {
         const script = this.Scripts.Funscript.Splitted;
 
         if (
-            this._buttplugOperator.Devices.Linears.length > 0 &&
+            this._buttplugOperator.isLinearsConnected &&
             currentSeconds !== this._previousSeconds &&
             script[currentSeconds + 1]
         ) {

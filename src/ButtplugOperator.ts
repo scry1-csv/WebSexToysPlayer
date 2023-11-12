@@ -8,6 +8,11 @@ export class ButtplugOperator {
 
     public UFOTWReverseLR: boolean = false;
 
+    get isViberatorConnected() { return this.Devices.Viberators.length > 0; }
+    get isRotatorConnected() { return this.Devices.Rotators.length > 0; }
+    get isLinearsConnected() { return this.Devices.Linears.length > 0; }
+    get isUFOTWConnected() { return this.Devices.UFOTW.length > 0; }
+
     Devices: {
         Viberators: Buttplug.ButtplugClientDevice[];
         Rotators: Buttplug.ButtplugClientDevice[];
