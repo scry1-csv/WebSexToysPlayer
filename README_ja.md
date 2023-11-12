@@ -12,13 +12,24 @@ WebSexToysPlayerは、the HandyやU.F.O. SA等の連動機能つき大人のオ�
 
 Intiface接続版: [https://scry1-csv.github.io/WebSexToysPlayer-Pages/player_intiface.html](https://scry1-csv.github.io/WebSexToysPlayer-Pages/player_intiface.html)
 
+## 動作環境
+単独動作版: WebBluetoothに対応しているブラウザ ( Chrome, Edgeなど )
+
+## 準備
+
+### 単独動作版の場合
+[こちらの解説](https://neos21.net/blog/2020/07/04-01.html)を参考にして、ブラウザのWebBluetooth機能をオンにしてください。
+
+### Intiface版の場合
+お使いの端末に、 [Intiface Central](https://intiface.com/central/) をインストールしてください。
+
 ## 使い方
 
 1. Intiface版のみ ( 単独動作版では不要 )
     1. 使用している端末に <a href="https://intiface.com/central/">Intiface Central</a> をインストール</li>
     2. (必要なら)プレイヤー画面上部の「localhost:12345」をIntifaceのサーバアドレスに書き換え</li>
     3. 「Buttplugサーバーへ接続」を押して接続成功を待つ</li>
-2. 接続に成功したら、端末のBluetoothと連動デバイスの電源がオンなのを確認してから「デバイス接続」を押す
+2. 端末のBluetoothと連動デバイスの電源がオンなのを確認してから「デバイス接続」を押す
 3. 動画や音声とスクリプトを読み込んで再生
 
 ## 対応スクリプト
@@ -39,7 +50,7 @@ Intiface接続版: [https://scry1-csv.github.io/WebSexToysPlayer-Pages/player_in
 - the Handy
 - その他、Buttplugでの振動・回転・前後運動操作に対応したデバイス ( [リスト](https://iostindex.com/?filter0ButtplugSupport=7) )
 
-A10 サイクロンSAやA10ピストンSAなどでも動くはずですが、当方では未所持につき動作は確認しておりません。
+A10サイクロンSAやA10ピストンSAなどでも動くはずですが、当方では未所持につき動作は確認しておりません。
 
 ## 動作確認済みデバイス
 
@@ -50,6 +61,9 @@ A10 サイクロンSAやA10ピストンSAなどでも動くはずですが、当
 - LOVENSE Domi2
 
 ## 更新履歴
+
+### 2023.11.12
+- UFOSA用のスクリプトでUFOTWを動かすオプションを追加
 
 ### 2023.11.8
 - UFOTWのスクリプトを開き直した時に以前のファイルがリストに残ったままだったのを修正
@@ -62,8 +76,8 @@ A10 サイクロンSAやA10ピストンSAなどでも動くはずですが、当
 
 ### 2023.9.8
 
-- the Handy 等の前後移動デバイス（Buttplug の LinearCmd 対応デバイス）に対応
-- Intiface を利用するように
+- the Handy等の前後移動デバイス（ ButtplugのLinearCmd対応デバイス）に対応
+- Intifaceを利用するように
 
 ### 2023.1.4
 

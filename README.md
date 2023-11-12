@@ -38,9 +38,12 @@ Therefore, it is not possible to control the U.F.O SA and A10 Cyclone SA separat
 
 ## Change Log
 
+## November 12, 2023
+- Added option to control UFOTW by UFOSA script
+
 ## November 8, 2023
 
-- Fixed previous UFOTW script remained in the list when reopening UFOTW scripts. 
+- Fixed previous UFOTW script remained in the list when reopening UFOTW scripts.
 - Now displayed an error when trying to open non-media files using the "Open Video or Audio" button
 - Tweaked some variable names
 
