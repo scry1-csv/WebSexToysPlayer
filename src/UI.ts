@@ -6,6 +6,8 @@ export class UI {
     readonly MediaNameSpan: HTMLElement = <HTMLMediaElement>document.getElementById("mediaNameSpan")!;
 
     readonly OffsetInput: HTMLInputElement = <HTMLInputElement>document.getElementById("offset")!;
+    readonly OffsetPlusButton: HTMLButtonElement = <HTMLButtonElement>document.getElementById("offsetPlusButton")!;
+    readonly OffsetMinusButton: HTMLButtonElement = <HTMLButtonElement>document.getElementById("offsetMinusButton")!;
 
     readonly UFOTWsettingli = document.getElementsByClassName("UFOTWsettingli")!;
     readonly UFOTWreverseLRCheckbox: HTMLInputElement = <HTMLInputElement>document.getElementById("UFOTWreverseLRCheckbox")!;

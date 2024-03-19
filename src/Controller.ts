@@ -89,6 +89,24 @@ export class Controller {
         }
     }
 
+    OffsetValueChanged(value: number) {
+        this.ScriptOperator.Offset = value;
+    }
+
+    OffsetPlusMinusButtonEvent(isPositive: boolean) {
+        const input = this.UI.OffsetInput;
+        let value = Number(input.value);
+        if (isPositive)
+            value += 0.1;
+        else
+            value -= 0.1;
+
+        value = Math.round(value * 100) / 100;
+
+        input.value = String(value);
+        this.OffsetValueChanged(value);
+    }
+
     LoadScript() {
         const file = this.UI.ScriptInput.files![0];
         if (file != undefined) {
@@ -161,8 +179,10 @@ export class Controller {
         });
 
         UI.OffsetInput.addEventListener("change", () => {
-            this.ScriptOperator.Offset = Number(UI.OffsetInput.value);
+            this.OffsetValueChanged(Number(UI.OffsetInput.value));
         });
+        UI.OffsetPlusButton.addEventListener("click", () => this.OffsetPlusMinusButtonEvent(true));
+        UI.OffsetMinusButton.addEventListener("click", () => this.OffsetPlusMinusButtonEvent(false));
 
         UI.ConnectDeviceButton.addEventListener("click", async () => {
             await this.ButtplugOperator.ConnectDevice();

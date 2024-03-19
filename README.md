@@ -38,6 +38,9 @@ Therefore, it is not possible to control the U.F.O SA and A10 Cyclone SA separat
 
 ## Change Log
 
+### March 19, 2024
+- Added button and process to set offset +-0.1
+
 ## November 12, 2023
 - Added option to control UFOTW by UFOSA script
 

@@ -186,6 +186,7 @@ export class ScriptOperator {
 
         if (
             this._buttplugOperator.isUFOTWConnected &&
+            !this.VorzeSAScriptToUFOTW &&
             currentSeconds !== this._previousSeconds &&
             script[currentSeconds + 1]
         ) {
