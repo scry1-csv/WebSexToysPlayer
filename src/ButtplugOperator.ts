@@ -148,25 +148,36 @@ export class ButtplugOperator {
         }
     }
 
-    SendViberateMsg(power: number) {
+    ForceStopAllDevices() {
+        this.SendViberateCmd(0.1);
+        this.SendRotateCmd(0.2, true);
+        this.SendLinearCmd(0.2, 1000);
+        this.SendUFOTWCmd(0.2, true, 0.2, true);
+        setTimeout(() => {
+            this.StopAllDevices();
+        }, 500);
+    }
+
+    SendViberateCmd(power: number) {
+        console.log("SendViberateCmd: " + power);
         this.Devices.Viberators.forEach((device) => {
             device.vibrate(power);
         });
     }
 
-    SendRotateMsg(power: number, clockwise: boolean) {
+    SendRotateCmd(power: number, clockwise: boolean) {
         this.Devices.Rotators.forEach((device) => {
             device.rotate(power, clockwise);
         });
     }
 
-    SendLinearMsg(position: number, duration: number) {
+    SendLinearCmd(position: number, duration: number) {
         this.Devices.Linears.forEach((device) => {
             device.linear(position, duration);
         });
     }
 
-    SendUFOTWMsg(leftPower: number, leftClockwise: boolean, rightPower: number, rightClockwise: boolean) {
+    SendUFOTWCmd(leftPower: number, leftClockwise: boolean, rightPower: number, rightClockwise: boolean) {
         this.Devices.UFOTW.forEach((device) => {
             if (this.UFOTWReverseLR)
                 device.rotate([[rightPower, rightClockwise], [leftPower, leftClockwise]]);

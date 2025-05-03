@@ -31,6 +31,8 @@ export class UI {
 
     readonly ConnectStatusSpan: HTMLElement = <HTMLElement>document.getElementById("connectStatus")!;
 
+    readonly ForceStopButton: HTMLButtonElement = <HTMLButtonElement>document.getElementById("forceStopButton")!;
+
     FunscriptSlider: SliderContainer | undefined;
 
     private AppendToList(list: HTMLOListElement, str: string): HTMLLIElement {

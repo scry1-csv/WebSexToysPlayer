@@ -194,5 +194,9 @@ export class Controller {
             this.ConnectWasm();
 
         this.ButtplugOperator.AddDevicesRefleshedEvents(() => this.RefleshDeviceLists());
+
+        UI.ForceStopButton.addEventListener("click", () => {
+            this.ButtplugOperator.ForceStopAllDevices();
+        });
     }
 }

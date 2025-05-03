@@ -4,9 +4,6 @@ import * as  Vorze_SA from "./Vorze_SA";
 import * as  UFOTW from "./UFOTW";
 import { Funscript } from "./Funscript";
 
-// TODO: 現在接続中のデバイスとスクリプトをマッピングする機能を追加する
-// TODO: UFOSA用のスクリプトでUFOTWを動かせるようにする → 実装したのでテストする
-
 export class ScriptOperator {
     private readonly _buttplugOperator: ButtplugOperator;
     private _previousSeconds: number = 0;
@@ -123,7 +120,7 @@ export class ScriptOperator {
                 setTimeout(() => console.log(log), delay);
 
                 const id = window.setTimeout(() => {
-                    this._buttplugOperator.SendViberateMsg(l.ButtPower);
+                    this._buttplugOperator.SendViberateCmd(l.ButtPower);
                 }, delay);
 
                 this._timerIDs.add(id);
@@ -155,12 +152,12 @@ export class ScriptOperator {
                 setTimeout(() => console.log(log), delay);
 
                 const id = window.setTimeout(() => {
-                    this._buttplugOperator.SendRotateMsg(
+                    this._buttplugOperator.SendRotateCmd(
                         l.ButtPower,
                         l.Clockwise
                     );
                     if (this.VorzeSAScriptToUFOTW) {
-                        this._buttplugOperator.SendUFOTWMsg(
+                        this._buttplugOperator.SendUFOTWCmd(
                             l.ButtPower,
                             l.Clockwise,
                             l.ButtPower,
@@ -197,7 +194,7 @@ export class ScriptOperator {
                 setTimeout(() => console.log(log), delay);
 
                 const id = window.setTimeout(() => {
-                    this._buttplugOperator.SendUFOTWMsg(
+                    this._buttplugOperator.SendUFOTWCmd(
                         l.LeftButtPower,
                         l.LeftClockwise,
                         l.RightButtPower,
@@ -233,7 +230,7 @@ export class ScriptOperator {
                 setTimeout(() => console.log(log), delay);
 
                 const id = window.setTimeout(() => {
-                    this._buttplugOperator.SendLinearMsg(l.ButtPosition, l.Duration);
+                    this._buttplugOperator.SendLinearCmd(l.ButtPosition, l.Duration);
                 }, delay);
 
                 this._timerIDs.add(id);
