@@ -1,6 +1,6 @@
-import { IButtplugClientConnector, ButtplugMessage } from "buttplug"
+import { IButtplugClientConnector, ButtplugMessage } from "buttplug";
 
-export class ButtplugWasmClientConnector implements IButtplugClientConnector {
+export declare class ButtplugWasmClientConnector implements IButtplugClientConnector {
     constructor();
     static activateLogging(logLevel?: string): Promise<void>;
     eventNames(): (string | symbol)[];

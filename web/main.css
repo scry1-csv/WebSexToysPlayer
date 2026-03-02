@@ -1,4 +1,6 @@
-body { background-color: white; }
+body {
+    background-color: white;
+}
 
 #player {
     width: 100%;
@@ -9,4 +11,23 @@ body { background-color: white; }
 
 .ui {
     margin: 0.5em;
+}
+
+#seekUi {
+    padding-bottom: 1em;
+}
+
+.device-card {
+    padding: 0.6em;
+    margin: 0.3em;
+    border: 1px solid #000;
+    width: fit-content;
+}
+
+.device-name {
+    font-weight: bold;
+}
+
+.capability-badges {
+    padding-left: 0.5em;
 }

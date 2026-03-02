@@ -6,6 +6,7 @@
 	<link rel="shortcut icon" href="#">
 	<title>WebSexToysPlayer for Intiface</title>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
@@ -21,17 +22,29 @@
 		接続状態 <span id="connectStatus"></span>
 	</div>
 	<video id="player" src="" controls></video>
+	<div class="ui" id="seekUi">
+		<span id="seekHourSpan"><input id="seekHourInput" type="number" style="width:3em;" min="0" value="0">時</span>
+		<span id="seekMinuteSpan"><input id="seekMinuteInput" type="number" style="width:3em;" min="0" max="59"
+				value="0">分</span>
+		<span id="seekSecondSpan"><input id="seekSecondInput" type="number" style="width:3em;" min="0" max="59"
+				value="0">秒</span>
+		<button id="seekButton" type="button">シーク</button>
+	</div>
 	<div class="ui">
 		<input id="mediaInput" type="file" accept="video/*,audio/*" style="display: none;" />
 		<button id="mediaButton" type="button">動画や音声を選択</button>
 		<span id="mediaNameSpan"></span>
 	</div>
 	<div class="ui">
-		<input id="scriptInput" type="file" accept="text/csv,.funscript" style="display: none;" />
+		<input id="scriptInput" type="file" accept="text/csv,.funscript,.coyotescript" style="display: none;" />
 		<button id="scriptButton" type="button">スクリプトを選択</button>
 	</div>
-	<div class="ui"><button id="connectDeviceButton">デバイス接続</button></div>
+	<div class="ui">
+		<button id="connectDeviceButton">デバイス接続</button>
+		<button id="coyoteConnectButton">Coyote接続</button>
+	</div>
 	<div class="ui"><button id="forceStopButton">強制停止</button></div>
+
 	<div>
 		<h3>設定</h3>
 		<ul>
@@ -52,30 +65,11 @@
 	</div>
 	<div>
 		<h3>接続済みデバイス</h3>
-		<ul id="DeviceList"></ul>
-		<ul>
-			<li>ローター/バイブ</li>
-			<ul id="VibDeviceList"></ul>
-			<li>回転</li>
-			<ul id="RotatorDeviceList"></ul>
-			<li>前後</li>
-			<ul id="LinearDeviceList"></ul>
-			<li>UFOTW</li>
-			<ul id="UFOTWDeviceList"></ul>
-		</ul>
+		<div id="DeviceListContainer"></div>
 	</div>
 	<div>
 		<h3>読込済みスクリプト</h3>
-		<ul>
-			<li>タイムローター用</li>
-			<ul id="TimeRoterScriptList"></ul>
-			<li>UFOSA・サイクロンSA用</li>
-			<ul id="VorzeSAScriptList"></ul>
-			<li>funscript</li>
-			<ul id="FunscriptList"></ul>
-			<li>UFOTW用</li>
-			<ul id="UFOTWScriptList"></ul>
-		</ul>
+		<ul id="ScriptList"></ul>
 	</div>
 	<script type="importmap">
 		{

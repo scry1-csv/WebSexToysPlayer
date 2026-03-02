@@ -1,16 +1,37 @@
 import { ButtplugOperator } from "./ButtplugOperator";
+import { CoyoteOperator } from "./CoyoteOperator";
+import * as Buttplug from "buttplug";
 import * as TimeRoter from "./TimeRoter";
+import * as CoyoteScript from "./CoyoteScript";
+
 import * as  Vorze_SA from "./Vorze_SA";
 import * as  UFOTW from "./UFOTW";
 import { Funscript } from "./Funscript";
 
+export type ScriptType = "TimeRoter" | "Vorze_SA" | "Funscript" | "UFOTW" | "CoyoteScript" | "none";
+
 export class ScriptOperator {
     private readonly _buttplugOperator: ButtplugOperator;
+    private readonly _coyoteOperator: CoyoteOperator;
     private _previousSeconds: number = 0;
+
     private _timerIDs = new Set<number>();
 
     public VorzeSAScriptToUFOTW: boolean = false;
     public Offset: number = 0;
+
+    /**
+     * デバイスID → スクリプト種別のマッピング
+     * キーはButtplugデバイスのindex文字列、またはCoyoteの場合は "coyote"
+     */
+    public DeviceScriptAssignments: Map<string, ScriptType> = new Map();
+
+    public CoyoteSettings = {
+        MinFrequency: 10,
+        MaxFrequency: 50,
+        MinStrength: 1,
+        MaxStrength: 30,
+    };
 
     Scripts: {
         TimeRoter: {
@@ -29,21 +50,39 @@ export class ScriptOperator {
             Splitted: readonly UFOTW.ScriptLine[][];
             Title: string;
         } | undefined;
+        CoyoteScript: {
+            Script: readonly CoyoteScript.ScriptLine[];
+            Title: string;
+        } | undefined;
     } = {
             TimeRoter: undefined,
             Vorze_SA: undefined,
             Funscript: undefined,
             UFOTW: undefined,
+            CoyoteScript: undefined,
         };
 
-    constructor(buttplug: ButtplugOperator) {
+    constructor(buttplug: ButtplugOperator, coyote: CoyoteOperator) {
         this._buttplugOperator = buttplug;
+        this._coyoteOperator = coyote;
     }
+
 
     LoadScript(script_str: string, filename: string): boolean {
         console.log("path: " + filename);
         if (filename.endsWith(".funscript")) {
             this.Scripts.Funscript = new Funscript(filename, script_str);
+            return true;
+        }
+
+        if (filename.endsWith(".coyotescript") && CoyoteScript.Validate(script_str)) {
+            const script = CoyoteScript.RawScriptToLines(script_str);
+            this.Scripts.CoyoteScript = {
+                Script: script,
+                Title: filename,
+            };
+            this._coyoteOperator.LoadCoyoteScript(script);
+            console.log("Coyote CSV script loaded. lines: " + script.length);
             return true;
         }
 
@@ -56,6 +95,7 @@ export class ScriptOperator {
             };
             console.log("timeroter script loaded. lines: " + script.length);
             return true;
+
         } else if (UFOTW.Validate(script_str)) {
             const script = UFOTW.RawScriptToLines(script_str);
             this.Scripts.UFOTW = {
@@ -77,10 +117,16 @@ export class ScriptOperator {
         } else return false;
     }
 
+    Start() {
+        this._coyoteOperator.Start();
+    }
+
     Stop() {
         this._previousSeconds = 0;
         this._buttplugOperator.StopAllDevices();
+        this._coyoteOperator.Stop();
         this._timerIDs.forEach((id) => {
+
             clearTimeout(id);
         });
         this._timerIDs.clear();
@@ -88,7 +134,9 @@ export class ScriptOperator {
 
     TimeUpdate(currentTime: number) {
         const adjustedTime = currentTime + this.Offset;
+        this._coyoteOperator.setTime(adjustedTime);
         const seconds = Math.trunc(adjustedTime);
+
         if (seconds !== this._previousSeconds) {
             this.OperateTimeRoterScript(adjustedTime);
             this.OperateVorzeSAScript(adjustedTime);
@@ -102,14 +150,74 @@ export class ScriptOperator {
         this.Scripts.Funscript?.SetRange(min, max);
     }
 
+    /**
+     * 指定デバイスに割り当てられたスクリプト種別を取得する
+     * @param deviceKey デバイス識別キー
+     * @returns スクリプト種別（未設定の場合は "none"）
+     */
+    GetDeviceScriptType(deviceKey: string): ScriptType {
+        return this.DeviceScriptAssignments.get(deviceKey) ?? "none";
+    }
+
+    /**
+     * TimeRoterスクリプトが割り当てられた振動デバイスを返す
+     */
+    private GetTimeRoterDevices(): Buttplug.ButtplugClientDevice[] {
+        return this._buttplugOperator.Devices.Viberators.filter(d => {
+            const key = String(d.index);
+            const assigned = this.DeviceScriptAssignments.get(key);
+            // 割り当てが未設定の場合は後方互換として動作させない（明示的に選択が必要）
+            return assigned === "TimeRoter";
+        });
+    }
+
+    /**
+     * VorzeSAスクリプトが割り当てられた回転デバイスを返す
+     */
+    private GetVorzeSARotatorDevices(): Buttplug.ButtplugClientDevice[] {
+        return this._buttplugOperator.Devices.Rotators.filter(d => {
+            return this.DeviceScriptAssignments.get(String(d.index)) === "Vorze_SA";
+        });
+    }
+
+    /**
+     * VorzeSAスクリプトが割り当てられたUFOTWデバイスを返す
+     */
+    private GetVorzeSAUFOTWDevices(): Buttplug.ButtplugClientDevice[] {
+        return this._buttplugOperator.Devices.UFOTW.filter(d => {
+            return this.DeviceScriptAssignments.get(String(d.index)) === "Vorze_SA";
+        });
+    }
+
+    /**
+     * Funscriptが割り当てられたリニアデバイスを返す
+     */
+    private GetFunscriptLinearDevices(): Buttplug.ButtplugClientDevice[] {
+        return this._buttplugOperator.Devices.Linears.filter(d => {
+            return this.DeviceScriptAssignments.get(String(d.index)) === "Funscript";
+        });
+    }
+
+    /**
+     * UFOTWスクリプトが割り当てられたUFOTWデバイスを返す
+     */
+    private GetUFOTWDevices(): Buttplug.ButtplugClientDevice[] {
+        return this._buttplugOperator.Devices.UFOTW.filter(d => {
+            return this.DeviceScriptAssignments.get(String(d.index)) === "UFOTW";
+        });
+    }
+
     private OperateTimeRoterScript(currentTime: number) {
         if (!this.Scripts.TimeRoter) return;
 
         const currentSeconds = Math.trunc(currentTime);
         const script = this.Scripts.TimeRoter.Splitted;
 
+        // 割り当て済みデバイスのみを取得
+        const devices = this.GetTimeRoterDevices();
+
         if (
-            this._buttplugOperator.isViberatorConnected &&
+            devices.length > 0 &&
             currentSeconds !== this._previousSeconds &&
             script[currentSeconds + 1]
         ) {
@@ -120,7 +228,8 @@ export class ScriptOperator {
                 setTimeout(() => console.log(log), delay);
 
                 const id = window.setTimeout(() => {
-                    this._buttplugOperator.SendViberateCmd(l.ButtPower);
+                    // 割り当て済みデバイスにのみ送信
+                    devices.forEach(d => d.vibrate(l.ButtPower));
                 }, delay);
 
                 this._timerIDs.add(id);
@@ -137,9 +246,10 @@ export class ScriptOperator {
         const currentSeconds = Math.trunc(currentTime);
         const script = this.Scripts.Vorze_SA.Splitted;
 
-        const deviceFlag =
-            this._buttplugOperator.isRotatorConnected ||
-            (this.VorzeSAScriptToUFOTW && this._buttplugOperator.isUFOTWConnected);
+        const rotatorDevices = this.GetVorzeSARotatorDevices();
+        const ufotwDevices = this.VorzeSAScriptToUFOTW ? this.GetVorzeSAUFOTWDevices() : [];
+
+        const deviceFlag = rotatorDevices.length > 0 || ufotwDevices.length > 0;
 
         if (deviceFlag &&
             currentSeconds !== this._previousSeconds &&
@@ -152,17 +262,14 @@ export class ScriptOperator {
                 setTimeout(() => console.log(log), delay);
 
                 const id = window.setTimeout(() => {
-                    this._buttplugOperator.SendRotateCmd(
-                        l.ButtPower,
-                        l.Clockwise
-                    );
+                    rotatorDevices.forEach(d => d.rotate(l.ButtPower, l.Clockwise));
                     if (this.VorzeSAScriptToUFOTW) {
-                        this._buttplugOperator.SendUFOTWCmd(
-                            l.ButtPower,
-                            l.Clockwise,
-                            l.ButtPower,
-                            l.Clockwise
-                        );
+                        ufotwDevices.forEach(d => {
+                            if (this._buttplugOperator.UFOTWReverseLR)
+                                d.rotate([[l.ButtPower, l.Clockwise], [l.ButtPower, l.Clockwise]]);
+                            else
+                                d.rotate([[l.ButtPower, l.Clockwise], [l.ButtPower, l.Clockwise]]);
+                        });
                     }
                 }, delay);
 
@@ -181,8 +288,10 @@ export class ScriptOperator {
         const currentSeconds = Math.trunc(currentTime);
         const script = this.Scripts.UFOTW.Splitted;
 
+        const devices = this.GetUFOTWDevices();
+
         if (
-            this._buttplugOperator.isUFOTWConnected &&
+            devices.length > 0 &&
             !this.VorzeSAScriptToUFOTW &&
             currentSeconds !== this._previousSeconds &&
             script[currentSeconds + 1]
@@ -194,12 +303,12 @@ export class ScriptOperator {
                 setTimeout(() => console.log(log), delay);
 
                 const id = window.setTimeout(() => {
-                    this._buttplugOperator.SendUFOTWCmd(
-                        l.LeftButtPower,
-                        l.LeftClockwise,
-                        l.RightButtPower,
-                        l.RightClockwise
-                    );
+                    devices.forEach(d => {
+                        if (this._buttplugOperator.UFOTWReverseLR)
+                            d.rotate([[l.RightButtPower, l.RightClockwise], [l.LeftButtPower, l.LeftClockwise]]);
+                        else
+                            d.rotate([[l.LeftButtPower, l.LeftClockwise], [l.RightButtPower, l.RightClockwise]]);
+                    });
                 }, delay);
 
                 this._timerIDs.add(id);
@@ -218,8 +327,10 @@ export class ScriptOperator {
         const currentMilliseconds = currentTime * 1000;
         const script = this.Scripts.Funscript.Splitted;
 
+        const devices = this.GetFunscriptLinearDevices();
+
         if (
-            this._buttplugOperator.isLinearsConnected &&
+            devices.length > 0 &&
             currentSeconds !== this._previousSeconds &&
             script[currentSeconds + 1]
         ) {
@@ -230,7 +341,7 @@ export class ScriptOperator {
                 setTimeout(() => console.log(log), delay);
 
                 const id = window.setTimeout(() => {
-                    this._buttplugOperator.SendLinearCmd(l.ButtPosition, l.Duration);
+                    devices.forEach(d => d.linear(l.ButtPosition, l.Duration));
                 }, delay);
 
                 this._timerIDs.add(id);
