@@ -152,12 +152,27 @@ export class CoyoteOperator {
         this._compiledMap25.clear();
         if (!this._originalCoyoteScript || this._originalCoyoteScript.length === 0) return;
 
-        const scriptMaxStrength = Math.max(...this._originalCoyoteScript
-            .map(line => line.Strength));
-        const scriptMinStrength = Math.min(...this._originalCoyoteScript
-            .filter(line => line.Strength > 0)
+        // const scriptMaxStrength = Math.max(...this._originalCoyoteScript
+        //     .map(line => line.Strength));
+        // const scriptMinStrength = Math.min(...this._originalCoyoteScript
+        //     .filter(line => line.Strength > 0)
+        //     .map(line => line.Strength)
+        // );
+
+        // スクリプトが長すぎると↑でコメントアウトしている配列のスプレッド展開では
+        // スタックオーバーフローするため、代わりにfor ofでmaxとminを取得する
+
+        const strengths = this._originalCoyoteScript
             .map(line => line.Strength)
-        );
+            .filter(s => s > 0);
+        let scriptMaxStrength: number = 0;
+        for (const s of strengths)
+            if (s > scriptMaxStrength) scriptMaxStrength = s;
+
+        let scriptMinStrength: number = 100;
+        for (const s of strengths)
+            if (s < scriptMinStrength) scriptMinStrength = s;
+
         const ActualMin = this.MinStrength * (100 / this.MaxStrength);
 
         console.log(`Coyote Script Strength Range: scriptMin=${scriptMinStrength}, scriptMax=${scriptMaxStrength}, ActualMin=${ActualMin}`);

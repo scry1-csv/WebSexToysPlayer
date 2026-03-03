@@ -82,7 +82,7 @@ export class ScriptOperator {
                 Title: filename,
             };
             this._coyoteOperator.LoadCoyoteScript(script);
-            console.log("Coyote CSV script loaded. lines: " + script.length);
+            console.log("CoyoteScript loaded. lines: " + script.length);
             return true;
         }
 
